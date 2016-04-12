@@ -25,7 +25,8 @@ module Circleci
 
         def self.need?(git_branches)
           return false unless git_branches.include?(ENV['CIRCLE_BRANCH'])
-          unless system("bundle update")
+          # NOTE: Run `bundle check` for workaround https://github.com/bundler/bundler/issues/4276
+          unless system("bundle update && bundle check")
             raise "Unable to execute `bundle update`"
           end
           `git status -sb 2> /dev/null`.include?("Gemfile.lock")
